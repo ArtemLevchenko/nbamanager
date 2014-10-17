@@ -19,6 +19,8 @@ public class MentalSkills {
     private Level reboundpass;
     // заслоны / открывание
     private Level screenopening;
+    
+    private Level deffenseInsideOutside;
 
     public MentalSkills() {
     }
@@ -69,6 +71,14 @@ public class MentalSkills {
 
     public void setScreenopening(Level screenopening) {
         this.screenopening = screenopening;
+    }
+
+    public Level getDeffenseInsideOutside() {
+        return deffenseInsideOutside;
+    }
+
+    public void setDeffenseInsideOutside(Level deffenseInsideOutside) {
+        this.deffenseInsideOutside = deffenseInsideOutside;
     }
     
     

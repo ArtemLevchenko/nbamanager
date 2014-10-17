@@ -6,30 +6,30 @@ import com.nbamanager.solution.entity.CoachMental;
 import com.nbamanager.solution.entity.GameSkills;
 import com.nbamanager.solution.entity.MentalSkills;
 import com.nbamanager.solution.entity.Player;
-import com.nbamanager.solution.enums.GamePosition;
 import com.nbamanager.solution.enums.Level;
 import com.nbamanager.solution.enums.TypeSchemaAttack;
 import com.nbamanager.solution.utils.WidthComparator;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 /**
  *
  * @author Artem
  */
-public class AttackEngine {
+public class OffenseEngine {
 
     private final int START_FIND = 0;
     private final int END_FIND = 4;
+    private final int END_FIND_BIG = 9;
+    private final int PLAYER_SIZE_ATTACK = 3;
     private final static TypeSchemaAttack[] _INSIDE_DOMINATE
             = new TypeSchemaAttack[]{TypeSchemaAttack.INSIDE, TypeSchemaAttack.INSIDE, TypeSchemaAttack.MID, TypeSchemaAttack.INSIDE, TypeSchemaAttack.MID};
     private final static TypeSchemaAttack[] _MID_DOMINATE
             = new TypeSchemaAttack[]{TypeSchemaAttack.MID, TypeSchemaAttack.INSIDE, TypeSchemaAttack.MID, TypeSchemaAttack.MID, TypeSchemaAttack.THREEPT};
     private final static TypeSchemaAttack[] _THREEPT_DOMINATE
             = new TypeSchemaAttack[]{TypeSchemaAttack.THREEPT, TypeSchemaAttack.THREEPT, TypeSchemaAttack.MID, TypeSchemaAttack.THREEPT, TypeSchemaAttack.MID};
-   
+
     private final static int[] INSIDE_ATTACK = new int[]{80, 50, 10};
     private final static int[] MID_ATTACK = new int[]{25, 80, 30};
     private final static int[] OUTSIDE_ATTACK = new int[]{10, 50, 80};
@@ -39,6 +39,10 @@ public class AttackEngine {
     private final static int[] SCREEN_OPENING_BALANCE = new int[]{0, 50, 0};
     private final static int[] COACH_OFFENSE_DEFFENSE = new int[]{50, 25, 0};
     
+    // 0 - first plyaer (max width) ...1 - second... 2-third
+    // 2 - 20% 1 - 30 % 0 - 50%
+    private final static int[] PERCENT_TO_WIN = new int[]{0, 1, 0, 1, 2, 0, 1, 0, 0, 2}; 
+
     public TypeSchemaAttack generateTypeSchemaAttack(Coach attackCoach) {
         TypeSchemaAttack[] chanseCoachSchemas = null;
         CoachMental mental = attackCoach.getCoachMental();
@@ -59,7 +63,7 @@ public class AttackEngine {
         return chanseCoachSchemas[RandomEngine.randomIntegerIndex(START_FIND, END_FIND)];
     }
 
-    // ПОЛУЧАЕМ ВЕС
+    // GET Width
     private int getWidthBySkills(Level levelSkills, int[] result) {
         int resultParam = 0;
         switch (levelSkills) {
@@ -77,14 +81,16 @@ public class AttackEngine {
         }
         return resultParam;
     }
-    // схема атаки + атакующие игроки (5 штук) + коач.
+
+    // Schema atack + List + Coach
+
     public List<PlayerWidthDTO> calculateMatrixAttack(TypeSchemaAttack attackSchema,
             List<Player> attackPlayers, Coach attackCoach) {
         List<PlayerWidthDTO> listWidthPlayers = new ArrayList<PlayerWidthDTO>();
-        
+
         CoachMental mental = attackCoach.getCoachMental();
         int coachWidth = getWidthBySkills(mental.getOffensedeffense(), COACH_OFFENSE_DEFFENSE);
-        
+
         for (Player player : attackPlayers) {
             int totalWidthPl = 0;
             GameSkills skills = player.getGameSkills();
@@ -94,32 +100,42 @@ public class AttackEngine {
                 case INSIDE:
                     totalWidthPl += getWidthBySkills(mentalSkills.getInsideoutside(), INSIDE_ATTACK);
                     totalWidthPl += getWidthBySkills(mentalSkills.getScreenopening(), SCREEN_DOMINATE);
+                    totalWidthPl += skills.getInscore();
                     break;
                 case MID:
                     totalWidthPl += getWidthBySkills(mentalSkills.getInsideoutside(), MID_ATTACK);
                     totalWidthPl += getWidthBySkills(mentalSkills.getScreenopening(), SCREEN_OPENING_BALANCE);
+                    totalWidthPl += skills.getMediumshoot();
                     break;
                 case THREEPT:
                     totalWidthPl += getWidthBySkills(mentalSkills.getInsideoutside(), OUTSIDE_ATTACK);
                     totalWidthPl += getWidthBySkills(mentalSkills.getScreenopening(), OPENING_DOMINATE);
+                    totalWidthPl += skills.getThreeshoot();
                     break;
                 default:
                     totalWidthPl += getWidthBySkills(mentalSkills.getInsideoutside(), MID_ATTACK);
                     totalWidthPl += getWidthBySkills(mentalSkills.getScreenopening(), SCREEN_OPENING_BALANCE);
+                    totalWidthPl += skills.getMediumshoot();
                     break;
             }
             // индивидуальные характеристики не зависят от схемы
             totalWidthPl += getWidthBySkills(mentalSkills.getOffensedeffense(), OFFENSE_DEFFENSE);
             totalWidthPl += ((skills.getBallsecuirity() + skills.getTotalrank() + coachWidth) / 2);
-            listWidthPlayers.add(new PlayerWidthDTO (player, totalWidthPl));
+            listWidthPlayers.add(new PlayerWidthDTO(player, totalWidthPl));
         }
         return listWidthPlayers;
     }
-    // Выбрать топ 3
-    // выбрать 1
-    public void getAttackPlayer(List<PlayerWidthDTO> listPlayerWidth){
+
+    public PlayerWidthDTO getAttackPlayer(List<PlayerWidthDTO> listPlayerWidth) {
         Collections.sort(listPlayerWidth, new WidthComparator());
-        //TODO: взять 3
+        List<PlayerWidthDTO> lastStepWidth = new ArrayList<PlayerWidthDTO>();
+        //TODO: взять 3 best player
+        for (int i = 0; i < PLAYER_SIZE_ATTACK; i++) {
+            lastStepWidth.add(listPlayerWidth.get(i));
+        }
+        int winAttackIndex = PERCENT_TO_WIN[RandomEngine.randomIntegerIndex(START_FIND, END_FIND_BIG)];
+
+        return lastStepWidth.get(winAttackIndex);
     }
 
 }

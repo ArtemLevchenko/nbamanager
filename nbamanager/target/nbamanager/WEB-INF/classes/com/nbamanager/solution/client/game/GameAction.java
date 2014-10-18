@@ -20,6 +20,11 @@ public class GameAction {
         Coach onBallCoach = Onball.valueOf(onBall) == Onball.HOME
                 ? globalGameContext.getCoachDTO().getHomeCoach()
                 : globalGameContext.getCoachDTO().getAwayCoach();
-
+        /*  1) GET SCHEMA
+                2) OFFENSE PLAYER
+                3) GET DEFF PLAYER
+                4) SHOOTENGINE
+                5) RESULT
+                */
     }
 }

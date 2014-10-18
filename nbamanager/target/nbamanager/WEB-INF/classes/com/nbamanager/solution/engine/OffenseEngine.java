@@ -82,7 +82,7 @@ public class OffenseEngine {
         return resultParam;
     }
 
-    // Schema atack + List + Coach
+    // 2 STEP. ATTACK
 
     public List<PlayerWidthDTO> calculateMatrixAttack(TypeSchemaAttack attackSchema,
             List<Player> attackPlayers, Coach attackCoach) {
@@ -95,7 +95,7 @@ public class OffenseEngine {
             int totalWidthPl = 0;
             GameSkills skills = player.getGameSkills();
             MentalSkills mentalSkills = player.getMentalSkil();
-            // в зависимости от схемы разные плюшки
+            // in schema
             switch (attackSchema) {
                 case INSIDE:
                     totalWidthPl += getWidthBySkills(mentalSkills.getInsideoutside(), INSIDE_ATTACK);
@@ -118,7 +118,7 @@ public class OffenseEngine {
                     totalWidthPl += skills.getMediumshoot();
                     break;
             }
-            // индивидуальные характеристики не зависят от схемы
+            // individual characteristics
             totalWidthPl += getWidthBySkills(mentalSkills.getOffensedeffense(), OFFENSE_DEFFENSE);
             totalWidthPl += ((skills.getBallsecuirity() + skills.getTotalrank() + coachWidth) / 2);
             listWidthPlayers.add(new PlayerWidthDTO(player, totalWidthPl));
@@ -129,7 +129,7 @@ public class OffenseEngine {
     public PlayerWidthDTO getAttackPlayer(List<PlayerWidthDTO> listPlayerWidth) {
         Collections.sort(listPlayerWidth, new WidthComparator());
         List<PlayerWidthDTO> lastStepWidth = new ArrayList<PlayerWidthDTO>();
-        //TODO: взять 3 best player
+        //TODO: get 3 best player
         for (int i = 0; i < PLAYER_SIZE_ATTACK; i++) {
             lastStepWidth.add(listPlayerWidth.get(i));
         }

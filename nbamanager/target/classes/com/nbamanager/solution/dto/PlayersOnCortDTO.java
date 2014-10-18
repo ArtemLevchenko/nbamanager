@@ -10,4 +10,25 @@ import java.util.List;
 public class PlayersOnCortDTO {
     private List<Player> homePlayers;
     private List<Player> awayPlayers;
+
+    public PlayersOnCortDTO() {
+    }
+
+    public List<Player> getHomePlayers() {
+        return homePlayers;
+    }
+
+    public void setHomePlayers(List<Player> homePlayers) {
+        this.homePlayers = homePlayers;
+    }
+
+    public List<Player> getAwayPlayers() {
+        return awayPlayers;
+    }
+
+    public void setAwayPlayers(List<Player> awayPlayers) {
+        this.awayPlayers = awayPlayers;
+    }
+    
+    
 }

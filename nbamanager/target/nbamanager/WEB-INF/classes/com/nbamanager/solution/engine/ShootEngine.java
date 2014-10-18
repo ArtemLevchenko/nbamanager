@@ -46,11 +46,11 @@ public class ShootEngine {
         else {
             result = DEF_DOMINATE_PERCENT_TO_SCORE[RandomEngine.randomIntegerIndex(_START, _END)];
         }
-        result = this.getCorrectShootProcess(result, offensePlayer.getPlayer(), deffPlayer.getPlayer());
+        result = this.getCorrectShootProcess(result, deffPlayer.getPlayer());
         return result;
     }
 
-    private Action getCorrectShootProcess(Action status, Player attackPlayer, Player deffensePlayer) {
+    private Action getCorrectShootProcess(Action status, Player deffensePlayer) {
         Action result = null;
         if (status == SCORE) {
             result = IS_FREETHR_ATTEMPT[RandomEngine.randomIntegerIndex(_START, _END)];

@@ -1,15 +1,10 @@
 package com.nbamanager.solution.client.beans;
 
-import com.nbamanager.solution.dao.FactoryDB;
-import com.nbamanager.solution.entity.Player;
+import com.nbamanager.solution.client.game.GameContext;
 import java.io.Serializable;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.event.ActionEvent;
 
 /**
  *
@@ -20,6 +15,7 @@ import javax.faces.bean.SessionScoped;
 public class GameBean implements Serializable {
 
     private String matchMessage;
+    private GameContext gameContext;
 
     public String getMatchMessage() {
         return matchMessage;
@@ -29,19 +25,16 @@ public class GameBean implements Serializable {
         this.matchMessage = matchMessage;
     }
 
-    
-    
-    @PostConstruct
-    public void test() {
-        List<Player> players;
-        try {
-            players = FactoryDB.getInstance().getPlayerDAO().getAllData();
-            for (Player pl : players) {
-                System.out.println("!! " + pl.getFname() + " " + pl.getTeam().getName());
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(GameBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public GameContext getGameContext() {
+        return gameContext;
+    }
 
+    public void setGameContext(GameContext gameContext) {
+        this.gameContext = gameContext;
+    }
+    
+    
+    public void goStep(ActionEvent actionEvent) {
+        this.setMatchMessage("хреяе!!!");
     }
 }

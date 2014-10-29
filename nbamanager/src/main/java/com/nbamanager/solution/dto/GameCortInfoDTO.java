@@ -11,6 +11,7 @@ public class GameCortInfoDTO {
     private Onball onBall;
     private GameTime gameTime;
     private String currentResultMessage;
+    // by one step!!! NOT ALL!
     private int score;
 
     public GameCortInfoDTO() {

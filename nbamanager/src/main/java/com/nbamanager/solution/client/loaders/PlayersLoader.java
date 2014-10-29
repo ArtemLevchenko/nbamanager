@@ -1,6 +1,5 @@
 package com.nbamanager.solution.client.loaders;
 
-import com.nbamanager.solution.client.beans.GameBean;
 import com.nbamanager.solution.dao.FactoryDB;
 import com.nbamanager.solution.entity.Player;
 import java.sql.SQLException;
@@ -26,7 +25,7 @@ public class PlayersLoader {
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(GameBean.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PlayersLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
         return teamPlayers;
     }

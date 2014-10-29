@@ -14,6 +14,7 @@
     <!-- Welcome page -->
     <welcome-file-list>
         <welcome-file>faces/site/game.xhtml</welcome-file>
+        <!--<welcome-file>faces/index.xhtml</welcome-file>-->
     </welcome-file-list>
  
     <!-- JSF mapping -->

@@ -17,6 +17,7 @@ import static com.nbamanager.solution.enums.Action.TURNOVER;
 import com.nbamanager.solution.enums.Onball;
 import static com.nbamanager.solution.enums.Onball.HOME;
 import com.nbamanager.solution.enums.TypeSchemaAttack;
+import com.nbamanager.solution.history.GameMessageHelper;
 import java.util.List;
 
 /**
@@ -29,8 +30,18 @@ public class GameAction {
     private ActiveTeamDTO offenseDTO;
     private ActiveTeamDTO deffenseDTO;
 
-    public void initData(Onball onBall) {
-        globalGameContext.getGameCortInfoDTO().setOnBall(onBall);
+    public GameContext getGlobalGameContext() {
+        return globalGameContext;
+    }
+
+    public void setGlobalGameContext(GameContext globalGameContext) {
+        this.globalGameContext = globalGameContext;
+    }
+    
+    
+
+    private void initData() {
+        Onball onBall = globalGameContext.getGameCortInfoDTO().getOnBall();
         globalGameContext.getGameCortInfoDTO().setScore(0);
         globalGameContext.getGameCortInfoDTO().getGameTime();
         
@@ -50,9 +61,23 @@ public class GameAction {
             deffenseDTO.setActivePlayers(globalGameContext.getPlayersDTO().getHomePlayers());
         }
     }
+    
+    private Onball checkOnBallAndNextStep(Onball onBall, boolean nextTeam){
+        Onball result = null;
+        if(onBall == Onball.HOME && nextTeam){
+            result = Onball.AWAY;
+        } else if(onBall == Onball.HOME && !nextTeam){
+            result = Onball.HOME;
+        } else if(onBall == Onball.AWAY && nextTeam){
+            result = Onball.HOME;
+        } else {
+            result = Onball.AWAY;
+        }
+        return result;
+    }
 
-    public void oneRunStep(Onball onBall) {
-        this.initData(onBall);
+    public void runStepExecute() {
+        this.initData();
         /*
          INIT data
          1) GET SCHEMA
@@ -78,15 +103,17 @@ public class GameAction {
         // SHOOT ENGINE
         ShootEngine shootEngine = new ShootEngine();
         Action shootProcess = shootEngine.getShootProcess(playerAttack, playerDeffense);
+        //check next team
+        boolean checkNextTeam = true;
+        // WARNING FORMER FOR STATS!!!
         switch (shootProcess) {
             case SCORE:
                 globalGameContext.getGameCortInfoDTO().setScore(new ScoresEngine().getScoresBySchema(schemaAttack));
-                globalGameContext.getGameCortInfoDTO().
-                        setCurrentResultMessage("Атаку завершает " + playerAttack.getPlayer().getFname() + playerAttack.getPlayer().getSname());
                 break;
             case FREETHROW:
                 Player foul4Player = new FoulEngine().rebound4Player(deffenseDTO.getActivePlayers());
                 globalGameContext.getGameCortInfoDTO().setScore(new FreethrowEngine().getScoresByFreethrow(playerAttack.getPlayer()));
+                playerDeffense.setPlayer(foul4Player);
                 break;
             case SLAMDUNK:
                 globalGameContext.getGameCortInfoDTO().setScore(2);
@@ -98,25 +125,33 @@ public class GameAction {
                 Player rebound4Player = null;
                 if (rebound == Action.OFREBOUND) {
                     rebound4Player = reboundEngine.rebound4Player(rebound, offenseDTO.getActivePlayers());
+                    // BALL ON THIS TEAM BECAUSE OFFENSE REBOUND 
+                    checkNextTeam = false;
+                    playerAttack.setPlayer(rebound4Player);
                 } else {
                     rebound4Player = reboundEngine.rebound4Player(rebound, deffenseDTO.getActivePlayers());
+                    playerDeffense.setPlayer(rebound4Player);
                 }
+                shootProcess = rebound;
                 break;
             case TURNOVER:
-                globalGameContext.getGameCortInfoDTO().setScore(0);
-                // ADD TURNOVER.
-                Player player4Turnover = playerAttack.getPlayer();
+                globalGameContext.getGameCortInfoDTO().setScore(0);                
                 break;
             case BLOCK:
                 globalGameContext.getGameCortInfoDTO().setScore(0);
-                // ADD BLOCK.
-                Player player4Block = playerDeffense.getPlayer();
                 break;
             case STEAL:
                 globalGameContext.getGameCortInfoDTO().setScore(0);
-                // ADD STEAL.
-                Player player4Steal = playerDeffense.getPlayer();
                 break;
         }
+        // ADD MESSAGE
+         globalGameContext.getGameCortInfoDTO().
+                        setCurrentResultMessage(
+                                GameMessageHelper.addMessage(
+                                        shootProcess, playerAttack.getPlayer(), playerDeffense.getPlayer(), 
+                                        globalGameContext.getGameCortInfoDTO().getScore(), schemaAttack));
+        // CHECK NEXT TEAM
+        globalGameContext.getGameCortInfoDTO().setOnBall(this.checkOnBallAndNextStep(globalGameContext.getGameCortInfoDTO().getOnBall(),checkNextTeam));
+        this.setGlobalGameContext(globalGameContext);
     }
 }

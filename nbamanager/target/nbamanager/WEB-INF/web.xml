@@ -14,6 +14,7 @@
     <!-- Welcome page -->
     <welcome-file-list>
         <welcome-file>faces/site/game.xhtml</welcome-file>
+        <!--<welcome-file>faces/index.xhtml</welcome-file>-->
     </welcome-file-list>
  
     <!-- JSF mapping -->
@@ -40,5 +41,9 @@
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
-
+    <context-param>
+        <param-name>primefaces.THEME</param-name>
+        <param-value>bootstrap</param-value>
+    </context-param>
+		
 </web-app>

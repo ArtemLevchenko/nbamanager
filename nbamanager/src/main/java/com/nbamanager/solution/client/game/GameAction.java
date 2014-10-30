@@ -1,14 +1,16 @@
 package com.nbamanager.solution.client.game;
 
-import com.nbamanager.solution.dto.ActiveTeamDTO;
+import com.nbamanager.solution.dto.ActiveTeamOnCortDTO;
 import com.nbamanager.solution.dto.PlayerWidthDTO;
 import com.nbamanager.solution.engine.DeffenseEngine;
 import com.nbamanager.solution.engine.FoulEngine;
 import com.nbamanager.solution.engine.FreethrowEngine;
+import com.nbamanager.solution.engine.GameTime;
 import com.nbamanager.solution.engine.OffenseEngine;
 import com.nbamanager.solution.engine.ReboundEngine;
 import com.nbamanager.solution.engine.ScoresEngine;
 import com.nbamanager.solution.engine.ShootEngine;
+import com.nbamanager.solution.engine.TimeEngine;
 import com.nbamanager.solution.entity.Player;
 import com.nbamanager.solution.enums.Action;
 import static com.nbamanager.solution.enums.Action.BLOCK;
@@ -17,6 +19,7 @@ import static com.nbamanager.solution.enums.Action.TURNOVER;
 import com.nbamanager.solution.enums.Onball;
 import static com.nbamanager.solution.enums.Onball.HOME;
 import com.nbamanager.solution.enums.TypeSchemaAttack;
+import com.nbamanager.solution.history.GameHistory;
 import com.nbamanager.solution.history.GameMessageHelper;
 import java.util.List;
 
@@ -25,57 +28,58 @@ import java.util.List;
  * @author Artem
  */
 public class GameAction {
-
+    
     private GameContext globalGameContext;
-    private ActiveTeamDTO offenseDTO;
-    private ActiveTeamDTO deffenseDTO;
-
+    private ActiveTeamOnCortDTO offenseDTO;
+    private ActiveTeamOnCortDTO deffenseDTO;
+    
     public GameContext getGlobalGameContext() {
         return globalGameContext;
     }
-
+    
     public void setGlobalGameContext(GameContext globalGameContext) {
         this.globalGameContext = globalGameContext;
     }
     
-    
-
     private void initData() {
         Onball onBall = globalGameContext.getGameCortInfoDTO().getOnBall();
         globalGameContext.getGameCortInfoDTO().setScore(0);
-        globalGameContext.getGameCortInfoDTO().getGameTime();
-        
-        offenseDTO = new ActiveTeamDTO();
-        deffenseDTO = new ActiveTeamDTO();
+        // NEXT TIME
+        GameTime timeNext = TimeEngine.getNewTime(globalGameContext.getGameCortInfoDTO().getGameTime());
+        globalGameContext.getGameCortInfoDTO().setGameTime(timeNext);
+        // ACTIVE INIT
+        offenseDTO = new ActiveTeamOnCortDTO();
+        deffenseDTO = new ActiveTeamOnCortDTO();
         if (onBall == HOME) {
+            // ADD ALGOIRITHM!!!! FOR GET START PLAYERS!!!!!!
             offenseDTO.setActiveCoach(globalGameContext.getCoachDTO().getHomeCoach());
             offenseDTO.setActivePlayers(globalGameContext.getPlayersDTO().getHomePlayers());
-
+            
             deffenseDTO.setActiveCoach(globalGameContext.getCoachDTO().getAwayCoach());
             deffenseDTO.setActivePlayers(globalGameContext.getPlayersDTO().getAwayPlayers());
         } else {
             offenseDTO.setActiveCoach(globalGameContext.getCoachDTO().getAwayCoach());
             offenseDTO.setActivePlayers(globalGameContext.getPlayersDTO().getAwayPlayers());
-
+            
             deffenseDTO.setActiveCoach(globalGameContext.getCoachDTO().getHomeCoach());
             deffenseDTO.setActivePlayers(globalGameContext.getPlayersDTO().getHomePlayers());
         }
     }
     
-    private Onball checkOnBallAndNextStep(Onball onBall, boolean nextTeam){
+    private Onball checkOnBallAndNextStep(Onball onBall, boolean nextTeam) {
         Onball result = null;
-        if(onBall == Onball.HOME && nextTeam){
+        if (onBall == Onball.HOME && nextTeam) {
             result = Onball.AWAY;
-        } else if(onBall == Onball.HOME && !nextTeam){
+        } else if (onBall == Onball.HOME && !nextTeam) {
             result = Onball.HOME;
-        } else if(onBall == Onball.AWAY && nextTeam){
+        } else if (onBall == Onball.AWAY && nextTeam) {
             result = Onball.HOME;
         } else {
             result = Onball.AWAY;
         }
         return result;
     }
-
+    
     public void runStepExecute() {
         this.initData();
         /*
@@ -145,13 +149,18 @@ public class GameAction {
                 break;
         }
         // ADD MESSAGE
-         globalGameContext.getGameCortInfoDTO().
-                        setCurrentResultMessage(
-                                GameMessageHelper.addMessage(
-                                        shootProcess, playerAttack.getPlayer(), playerDeffense.getPlayer(), 
-                                        globalGameContext.getGameCortInfoDTO().getScore(), schemaAttack));
+        globalGameContext.getGameCortInfoDTO().
+                setCurrentResultMessage(
+                        GameMessageHelper.addMessage(
+                                shootProcess, playerAttack.getPlayer(), playerDeffense.getPlayer(),
+                                globalGameContext.getGameCortInfoDTO().getScore(), schemaAttack));
+        // HISTORY FORMER:
+        GameHistory historyLine = GameMessageHelper.addToHistory(shootProcess, playerAttack.getPlayer(),
+                playerDeffense.getPlayer(), globalGameContext.getGameCortInfoDTO().getCurrentResultMessage(), globalGameContext.getGameCortInfoDTO().getGameTime());
+        globalGameContext.getGameHistoryDTO().getMatchHistory().add(historyLine);
         // CHECK NEXT TEAM
-        globalGameContext.getGameCortInfoDTO().setOnBall(this.checkOnBallAndNextStep(globalGameContext.getGameCortInfoDTO().getOnBall(),checkNextTeam));
+        globalGameContext.getGameCortInfoDTO().setOnBall(this.checkOnBallAndNextStep(globalGameContext.getGameCortInfoDTO().getOnBall(), checkNextTeam));
+        // ADDED Context
         this.setGlobalGameContext(globalGameContext);
     }
 }

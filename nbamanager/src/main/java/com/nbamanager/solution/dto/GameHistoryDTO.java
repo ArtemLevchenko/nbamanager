@@ -9,25 +9,17 @@ import java.util.List;
  */
 public class GameHistoryDTO {
 
-    private List<GameHistory> homeGameHistory;
-    private List<GameHistory> awayGameHistory;
+    private List<GameHistory> matchHistory;
 
     public GameHistoryDTO() {
     }
 
-    public List<GameHistory> getHomeGameHistory() {
-        return homeGameHistory;
+    public List<GameHistory> getMatchHistory() {
+        return matchHistory;
     }
 
-    public void setHomeGameHistory(List<GameHistory> homeGameHistory) {
-        this.homeGameHistory = homeGameHistory;
+    public void setMatchHistory(List<GameHistory> matchHistory) {
+        this.matchHistory = matchHistory;
     }
-
-    public List<GameHistory> getAwayGameHistory() {
-        return awayGameHistory;
-    }
-
-    public void setAwayGameHistory(List<GameHistory> awayGameHistory) {
-        this.awayGameHistory = awayGameHistory;
-    }
+    
 }

@@ -5,9 +5,9 @@ import com.nbamanager.solution.client.game.GameContext;
 import com.nbamanager.solution.client.loaders.CoachLoader;
 import com.nbamanager.solution.client.loaders.PlayersLoader;
 import com.nbamanager.solution.dto.CoachDTO;
-import com.nbamanager.solution.dto.GameCortInfoDTO;
+import com.nbamanager.solution.dto.CortInfoDTO;
 import com.nbamanager.solution.dto.GameHistoryDTO;
-import com.nbamanager.solution.dto.PlayersOnCortDTO;
+import com.nbamanager.solution.dto.PlayersAllDTO;
 import com.nbamanager.solution.engine.GameTime;
 import com.nbamanager.solution.enums.Onball;
 import com.nbamanager.solution.history.GameHistory;
@@ -42,18 +42,17 @@ public class GameSimulationBean implements Serializable {
         gameContext.getCoachDTO().setAwayCoach(coachLoader.getPlayersByTeam("Lakers"));
         //player
         PlayersLoader playerLoader = new PlayersLoader();
-        PlayersOnCortDTO plDTO = new PlayersOnCortDTO();
+        PlayersAllDTO plDTO = new PlayersAllDTO();
         plDTO.setHomePlayers(playerLoader.getPlayersByTeam("Miami"));
         plDTO.setAwayPlayers(playerLoader.getPlayersByTeam("Lakers"));
         gameContext.setPlayersDTO(plDTO);
         // history
         GameHistoryDTO historyDTO = new GameHistoryDTO();
-        historyDTO.setAwayGameHistory(new ArrayList<GameHistory>());
-        historyDTO.setHomeGameHistory(new ArrayList<GameHistory>());
+        historyDTO.setMatchHistory(new ArrayList<GameHistory>());
         gameContext.setGameHistoryDTO(historyDTO);
         // game info
-        GameCortInfoDTO gameCortInfoDTO = new GameCortInfoDTO();
-        gameCortInfoDTO.setOnBall(Onball.AWAY);
+        CortInfoDTO gameCortInfoDTO = new CortInfoDTO();
+        gameCortInfoDTO.setOnBall(Onball.HOME);
         gameCortInfoDTO.setCurrentResultMessage("");
         GameTime gameTime = new GameTime();
         gameTime.setCurrentTime(12.0);

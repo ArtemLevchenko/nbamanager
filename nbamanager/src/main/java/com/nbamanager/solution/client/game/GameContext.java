@@ -1,9 +1,9 @@
 package com.nbamanager.solution.client.game;
 
 import com.nbamanager.solution.dto.CoachDTO;
-import com.nbamanager.solution.dto.GameCortInfoDTO;
+import com.nbamanager.solution.dto.CortInfoDTO;
 import com.nbamanager.solution.dto.GameHistoryDTO;
-import com.nbamanager.solution.dto.PlayersOnCortDTO;
+import com.nbamanager.solution.dto.PlayersAllDTO;
 
 /**
  *
@@ -11,19 +11,19 @@ import com.nbamanager.solution.dto.PlayersOnCortDTO;
  */
 public class GameContext {
 
-    private PlayersOnCortDTO playersDTO;
+    private PlayersAllDTO playersDTO;
     private CoachDTO coachDTO;
     private GameHistoryDTO gameHistoryDTO;
-    private GameCortInfoDTO gameCortInfoDTO;
+    private CortInfoDTO gameCortInfoDTO;
 
     public GameContext() {
     }
 
-    public PlayersOnCortDTO getPlayersDTO() {
+    public PlayersAllDTO getPlayersDTO() {
         return playersDTO;
     }
 
-    public void setPlayersDTO(PlayersOnCortDTO playersDTO) {
+    public void setPlayersDTO(PlayersAllDTO playersDTO) {
         this.playersDTO = playersDTO;
     }
 
@@ -43,11 +43,11 @@ public class GameContext {
         this.gameHistoryDTO = gameHistoryDTO;
     }
 
-    public GameCortInfoDTO getGameCortInfoDTO() {
+    public CortInfoDTO getGameCortInfoDTO() {
         return gameCortInfoDTO;
     }
 
-    public void setGameCortInfoDTO(GameCortInfoDTO gameCortInfoDTO) {
+    public void setGameCortInfoDTO(CortInfoDTO gameCortInfoDTO) {
         this.gameCortInfoDTO = gameCortInfoDTO;
     }
     

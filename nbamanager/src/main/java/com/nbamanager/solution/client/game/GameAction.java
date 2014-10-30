@@ -148,6 +148,7 @@ public class GameAction {
                 globalGameContext.getGameCortInfoDTO().setScore(0);
                 break;
         }
+        // UPDATE STATS:
         // ADD MESSAGE
         globalGameContext.getGameCortInfoDTO().
                 setCurrentResultMessage(

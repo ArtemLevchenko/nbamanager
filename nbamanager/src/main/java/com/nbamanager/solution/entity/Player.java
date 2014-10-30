@@ -1,5 +1,6 @@
 package com.nbamanager.solution.entity;
 
+import com.nbamanager.solution.stats.IndividualGameStats;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  *
@@ -43,6 +45,10 @@ public class Player implements Serializable {
     @ManyToOne
     private Team team;
 
+    // not DB
+    @Transient
+    private IndividualGameStats inGameStats;
+    
     public Player() {
     }
 
@@ -100,6 +106,14 @@ public class Player implements Serializable {
 
     public void setMentalSkills(MentalSkills mentalSkills) {
         this.mentalSkills = mentalSkills;
+    }
+
+    public IndividualGameStats getInGameStats() {
+        return inGameStats;
+    }
+
+    public void setInGameStats(IndividualGameStats inGameStats) {
+        this.inGameStats = inGameStats;
     }
 
    

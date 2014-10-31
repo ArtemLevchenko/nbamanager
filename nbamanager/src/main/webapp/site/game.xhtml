@@ -13,11 +13,40 @@
     </h:head>
     <h:body>
         <h:form>
-            <p:panelGrid id="gameId" columns="1"> 
-                <h3>NBA MATCH</h3>
-                <p:inputTextarea value="#{gameBean.matchMessage}" rows="6" cols="33" />
-                <p:commandButton value="Next Step" id="ajax" update="gameId" actionListener="#{gameBean.goStep}" styleClass="ui-priority-primary" />
-            </p:panelGrid>     
+            <p:layout style="min-width:700px;min-height:1000px;">
+                <p:layoutUnit position="north">
+                    north
+                </p:layoutUnit>
+                <p:layoutUnit position="west" >
+                    <p:panelGrid id="gameId" columns="1" style="width:490px; height:300px;"> 
+                        <h3>NBA MATCH</h3>
+                        <p:inputTextarea value="#{gameBean.matchMessage}" rows="20" cols="73" autoResize="false"/>
+                        <p:commandButton value="Next Step" id="ajax" update="gameId" actionListener="#{gameBean.goStep}" styleClass="ui-priority-primary" />
+                    </p:panelGrid>  
+                </p:layoutUnit>
+
+                <p:layoutUnit position="center" >
+                    <p:tabView>
+                        <p:tab title="Box Score">
+                            <h:panelGrid columns="2" cellpadding="10">
+                                <p:graphicImage name="../images/bg.jpg" />
+                                <h:outputText
+                                    value="Miami Heat" />
+                            </h:panelGrid>
+                        </p:tab>
+                        <p:tab title="Coach mode: Home Team">
+                            <h:panelGrid columns="2" cellpadding="10">
+                                <h:outputText value="Francis Ford Coppola's legendary..." />
+                            </h:panelGrid>
+                        </p:tab>
+                        <p:tab title="Coach mode: Away Team">
+                            <h:panelGrid columns="2" cellpadding="10">
+                                <h:outputText value="After a break of more than 15 years..." />
+                            </h:panelGrid>
+                        </p:tab>
+                    </p:tabView>
+                </p:layoutUnit>
+            </p:layout>
         </h:form>
     </h:body>
 </html>

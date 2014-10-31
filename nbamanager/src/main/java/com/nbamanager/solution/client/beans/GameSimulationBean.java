@@ -33,7 +33,7 @@ public class GameSimulationBean implements Serializable {
         gameContext = new GameContext();
     }
     
-    @PostConstruct
+   // @PostConstruct
     public void initGameData(){
         // coach
         CoachLoader coachLoader = new CoachLoader();
